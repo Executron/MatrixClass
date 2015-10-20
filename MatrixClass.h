@@ -4,12 +4,12 @@
 using namespace std; 
 
 template < int R, int C >
-struct vMatrix
+class vMatrix
 {
-
+private:
 	vector<float> Elements;
 
-
+public:
 	vMatrix()
 	{ 
 		Elements.resize(R*C);
@@ -30,9 +30,14 @@ struct vMatrix
 	
 
 
-	float operator[](int index)
+	float& operator[](int index)
 	{
-		return Elements[i];
+		return Elements[index];
+	}
+
+	int size()
+	{
+		return Elements.size();
 	}
 	
 	vMatrix<1, C> getRow(int row)
@@ -40,7 +45,7 @@ struct vMatrix
 		vMatrix<1, C> k;
 		for (int i = 0; i < k.Elements.size(); i++)
 		{
-			k.Elements[i] = Elements[row*C + i];
+			k[i] = Elements[row*C + i];
 		}
 		return k;
 	}
@@ -49,7 +54,7 @@ struct vMatrix
 		vMatrix<C, 1> k;
 		for (int i = 0; i < k.Elements.size(); i++)
 		{
-			k.Elements[i] = Elements[i*C + col];
+			k[i] = Elements[i*C + col];
 		}
 		return k;
 	}
@@ -66,14 +71,25 @@ struct vMatrix
 		}
 	}
 
+	//ACCESS
+
+	float& operator[](unsigned int Index)
+	{
+		return Elements[Index];
+	}
+
+	float& at(int row, int col)
+	{
+		return Elements(row*C + col);
+	}
 	//ASSIGNMENT
 
 	vMatrix<R, C> operator=(vMatrix<R, C>&A)
 	{
 		vMatrix<R, C> Result;
-		for (int i = 0; i < A.Elements.size(); i++)
+		for (int i = 0; i < A.size(); i++)
 		{
-			Result.Elements[i] = A.Elements[i];
+			Result[i] = A[i];
 		}
 		return Result;
 	}
@@ -83,9 +99,9 @@ struct vMatrix
 	vMatrix<R, C> operator+(vMatrix<R, C>& A)
 	{
 		vMatrix<R,C> Result;
-		for (int i = 0; i < A.Elements.size(); i++)
+		for (int i = 0; i < A.size(); i++)
 		{
-			Result.Elements[i] = this->Elements[i] + A.Elements[i];
+			Result[i] = this->Elements[i] + A[i];
 		}
 		return Result;
 	}
@@ -100,9 +116,9 @@ struct vMatrix
 	vMatrix<R, C> operator-(vMatrix<R, C>& A)
 	{
 		vMatrix<R, C> Result;
-		for (int i = 0; i < A.Elements.size(); i++)
+		for (int i = 0; i < A.size(); i++)
 		{
-			Result.Elements[i] = this->Elements[i] - A.Elements[i];
+			Result[i] = this->Elements[i] - A[i];
 		}
 		return Result;
 	}
@@ -126,9 +142,9 @@ struct vMatrix
 				float total = 0;
 				for (int k = 0; k < C; k++)
 				{
-					total += (this->Elements[i * C + k] * other.Elements[k * C2 + j]);
+					total += (this->Elements[i * C + k] * other[k * C2 + j]);
 				}
-				Result.Elements[i*C2 + j] = total;
+				Result[i*C2 + j] = total;
 			}
 		}
 		return Result;
@@ -145,7 +161,7 @@ struct vMatrix
 		vMatrix<R, C> Result;
 		for (int i = 0; i < Elements.size();i++)
 		{
-			Result.Elements[i] = scale*Elements[i];
+			Result[i] = scale*Elements[i];
 		}
 	}
 
@@ -164,7 +180,7 @@ struct vMatrix
 		{
 			for (int j = 0; j < R; j++)
 			{
-				Result.Elements[i*R + j] = Elements[j*C + i];
+				Result[i*R + j] = Elements[j*C + i];
 			}
 		}
 		return Result;
